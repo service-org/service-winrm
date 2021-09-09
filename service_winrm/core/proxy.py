@@ -7,6 +7,7 @@ from __future__ import annotations
 import typing as t
 
 from service_core.core.configure import Configure
+from service_winrm.core.connect import Connection
 from service_winrm.constants import WINRM_CONFIG_KEY
 
 from .connect import Connection
@@ -24,7 +25,7 @@ class WinrmProxy(object):
         self.config = config
         self.options = options
 
-    def __call__(self, alias: t.Text, **options: t.Text) -> Session:
+    def __call__(self, alias: t.Text, **options: t.Text) -> Connection:
         """ 代理可调用
 
         @param alias: 配置别名
@@ -34,7 +35,7 @@ class WinrmProxy(object):
         cur_options = self.options
         # 调用时传递的参数配置优先级最高
         cur_options.update(options)
-        config = self.config.get(f'{WINRM_CONFIG_KEY}.{alias}', default={})
+        config = self.config.get(f'{WINRM_CONFIG_KEY}.{alias}.protocol_options', default={})
         # 调用时传递的参数配置优先级最高
         config.update(cur_options)
         return Connection(**config)
