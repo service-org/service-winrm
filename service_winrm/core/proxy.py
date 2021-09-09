@@ -4,12 +4,12 @@
 
 from __future__ import annotations
 
-
 import typing as t
 
-from winrm import Session
 from service_core.core.configure import Configure
 from service_winrm.constants import WINRM_CONFIG_KEY
+
+from .connect import Connection
 
 
 class WinrmProxy(object):
@@ -37,7 +37,4 @@ class WinrmProxy(object):
         config = self.config.get(f'{WINRM_CONFIG_KEY}.{alias}', default={})
         # 调用时传递的参数配置优先级最高
         config.update(cur_options)
-        endpoint = config.pop('endpoint', '')
-        username = config.pop('username', '')
-        password = config.pop('password', '')
-        return Session(target=endpoint, auth=(username, password), **config)
+        return Connection(**config)

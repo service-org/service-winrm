@@ -6,9 +6,9 @@ from __future__ import annotations
 
 import typing as t
 
-from winrm import Session
 from service_core.core.context import WorkerContext
 from service_winrm.constants import WINRM_CONFIG_KEY
+from service_winrm.core.connect import Connection
 from service_core.core.service.dependency import Dependency
 
 
@@ -39,10 +39,7 @@ class Winrm(Dependency):
         protocol_options = self.container.config.get(f'{WINRM_CONFIG_KEY}.{self.alias}.protocol_options', default={})
         # 防止YAML中声明值为None
         self.protocol_options = (protocol_options or {}) | self.protocol_options
-        endpoint = self.protocol_options.pop('endpoint', '')
-        username = self.protocol_options.pop('username', '')
-        password = self.protocol_options.pop('password', '')
-        self.client = Session(target=endpoint, auth=(username, password), **self.protocol_options)
+        self.client = Connection(**self.protocol_options)
 
     def get_instance(self, context: WorkerContext) -> t.Any:
         """ 获取注入对象

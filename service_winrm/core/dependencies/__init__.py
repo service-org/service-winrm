@@ -4,4 +4,4 @@
 
 from __future__ import annotations
 
-from .session import Winrm
+from .winrm import Winrm
