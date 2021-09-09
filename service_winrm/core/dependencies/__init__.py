@@ -3,3 +3,5 @@
 # author: forcemain@163.com
 
 from __future__ import annotations
+
+from .session import Winrm
