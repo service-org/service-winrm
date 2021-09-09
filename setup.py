@@ -26,5 +26,5 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.9',
     ],
-    install_requires=['service-core', 'winrm==0.4.1']
+    install_requires=['service-core', 'pywinrm==0.4.2']
 )

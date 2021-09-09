@@ -35,7 +35,7 @@ class WinrmProxy(object):
         cur_options = self.options
         # 调用时传递的参数配置优先级最高
         cur_options.update(options)
-        config = self.config.get(f'{WINRM_CONFIG_KEY}.{alias}.protocol_options', default={})
+        config = self.config.get(f'{WINRM_CONFIG_KEY}.{alias}.connect_options', default={})
         # 调用时传递的参数配置优先级最高
         config.update(cur_options)
         return Connection(**config)

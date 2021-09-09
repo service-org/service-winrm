@@ -16,8 +16,8 @@ class Connection(Session):
         """ 初始化实例
 
         @param endpoint: 入口地址
-        @param username: 认证账户
+        @param username: 认证用户
         @param password: 认证密码
-        @param kwargs: 其它参数
+        @param kwargs: 其它选项
         """
         super(Connection, self).__init__(target=endpoint, auth=(username, password), **kwargs)
