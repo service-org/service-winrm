@@ -45,10 +45,14 @@ WINRM:
 
 from __future__ import annotations
 
+import typing as t
+
 from logging import getLogger
+from passlib.hash import nthash
+from service_winrm.core.connect import Connection
+from service_winrm.core.dependencies import Winrm
 from service_croniter.core.entrypoints import croniter
 from service_core.core.service import Service as BaseService
-from service_winrm.core.dependencies import ApiSixwinrmKvRegist
 
 logger = getLogger(__name__)
 
@@ -62,15 +66,43 @@ class Service(BaseService):
     desc = 'demo'
 
     # 作为依赖项
-    winrm_kv = ApiSixwinrmKvRegist(alias='test', skip_inject=True)
+    winrm: Connection = Winrm(alias='test')
+
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
+        # 此服务无需启动监听端口, 请初始化掉下面参数
+        self.host = ''
+        self.port = 0
+        super(Service, self).__init__(*args, **kwargs)
 
     @croniter.cron('* * * * * */1')
-    def test_croniter_every_second_with_exec_atonce(self) -> None:
-        """ 测试每秒且立即执行
+    def test_winrm_whoami_with_cmd(self, *args, **kwargs) -> None:
+        """ 测试执行cmd命令
 
-        doc: https://github.com/kiorky/croniter
+        doc: https://docs.microsoft.com/en-us/windows/win32/winrm/portal
+        @return: None
         """
-        logger.debug('yeah~ yeah~ yeah~, i am called ~')
+        cmd = 'whoami'
+        result = self.winrm.run_cmd(cmd)
+        logger.debug(f'yeah~ yeah~ yeah~, cmd code={result.status_code} out={result.std_out} err={result.std_err}')
+
+    @croniter.cron('* * * * * */1')
+    def test_winrm_set_sam_account_password_hash_with_powershell(self, *args, **kwargs) -> None:
+        """ 测试执行powershell脚本
+
+        doc: https://docs.microsoft.com/en-us/windows/win32/winrm/portal
+        @return: None
+        """
+        addomain = 'cn'
+        username = 'test'
+        adserver = '10.246.3.34'
+        password = nthash.hash('test')
+        ps = f'''
+        Import-Module ActiveDirectory
+        Import-Module C:\DSInternals
+        Set-SamAccountPasswordHash -SamAccountName {username} -Domain {addomain} -NTHash {password} -Server {adserver}
+        '''
+        result = self.winrm.run_ps(ps)
+        logger.debug(f'yeah~ yeah~ yeah~, ps code={result.status_code} out={result.std_out} err={result.std_err}')
 ```
 
 > facade.py
@@ -104,17 +136,15 @@ service = Service()
       error  : monkey_patch causes issues with dns .local #694
       issue  : https://github.com/eventlet/eventlet/issues/694#issuecomment-806100692
 
-2021-08-04 11:22:02,236 - 13808 - DEBUG - load subcmd service_core.cli.subcmds.debug:Debug succ
-2021-08-04 11:22:02,237 - 13808 - DEBUG - load subcmd service_core.cli.subcmds.shell:Shell succ
-2021-08-04 11:22:02,237 - 13808 - DEBUG - load subcmd service_core.cli.subcmds.start:Start succ
-2021-08-04 11:22:02,238 - 13808 - DEBUG - load subcmd service_core.cli.subcmds.config:Config succ
-2021-08-04 11:22:02,332 - 13808 - DEBUG - load subctx service_core.cli.subctxs.config:Config succ
-2021-08-04 11:22:02,332 - 13808 - DEBUG - load subctx service_winrm.cli.subctxs.winrm:winrm succ
-PtPython - 3.9.6 (tags/v3.9.6:db3ff76, Jun 28 2021, 15:26:21) [MSC v.1929 64 bit (AMD64)]
->>> import json
->>> resp = s.winrm.proxy(alias='test').kv.get_kv('apisix-service-upstreams', fields={'keys': True})
->>> json.loads(resp.data.decode('utf-8'))
-['apisix-service-upstreams/demo/10.219.255.176:49234']
+2021-09-10 10:19:21,051 - 193432 - DEBUG - load subcmd service_core.cli.subcmds.debug:Debug succ
+2021-09-10 10:19:21,053 - 193432 - DEBUG - load subcmd service_core.cli.subcmds.config:Config succ
+2021-09-10 10:19:21,053 - 193432 - DEBUG - load subcmd service_core.cli.subcmds.shell:Shell succ
+2021-09-10 10:19:21,053 - 193432 - DEBUG - load subcmd service_core.cli.subcmds.start:Start succ
+2021-09-10 10:19:21,331 - 193432 - DEBUG - load subctx service_winrm.cli.subctxs.winrm:Winrm succ
+2021-09-10 10:19:21,331 - 193432 - DEBUG - load subctx service_core.cli.subctxs.config:Config succ
+CPython - 3.9.6 (tags/v3.9.6:db3ff76, Jun 28 2021, 15:26:21) [MSC v.1929 64 bit (AMD64)]
+>>> s.winrm.proxy(alias='test').run_ps('whoami')
+<Response code 0, out "b'cn\\wbchange\r\n'", err "b''">
 ```
 
 # 运行调试

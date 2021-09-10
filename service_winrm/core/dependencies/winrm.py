@@ -45,4 +45,5 @@ class Winrm(Dependency):
         @param context: 上下文对象
         @return: t.Any
         """
+        # 注意: winrm的连接是不允许共享的,涉及内部会话
         return Connection(**self.connect_options)
