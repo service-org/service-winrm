@@ -94,7 +94,7 @@ class Service(BaseService):
         """
         addomain = 'cn'
         username = 'test'
-        adserver = '10.246.3.34'
+        adserver = '127.0.0.1'
         password = nthash.hash('test')
         ps = f'''
         Import-Module ActiveDirectory
