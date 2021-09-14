@@ -7,7 +7,6 @@ from __future__ import annotations
 import typing as t
 
 from service_core.core.configure import Configure
-from service_winrm.core.connect import Connection
 from service_winrm.constants import WINRM_CONFIG_KEY
 
 from .connect import Connection
