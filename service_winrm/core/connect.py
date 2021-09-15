@@ -12,7 +12,7 @@ from winrm import Session
 class Connection(Session):
     """ Winrm通用连接 """
 
-    def __init__(self, endpoint: t.Text, username: t.Text, password: t.Text, **kwargs: t.Dict[t.Text, t.Any]) -> None:
+    def __init__(self, endpoint: t.Text, username: t.Text, password: t.Text, **kwargs: t.Any) -> None:
         """ 初始化实例
 
         @param endpoint: 入口地址
