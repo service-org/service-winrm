@@ -10,7 +10,7 @@ from winrm import Session
 
 
 class WinrmClient(Session):
-    """ Winrm通用连接 """
+    """ Winrm通用连接类 """
 
     def __init__(self, endpoint: t.Text, username: t.Text, password: t.Text, **kwargs: t.Any) -> None:
         """ 初始化实例
