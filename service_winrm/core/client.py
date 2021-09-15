@@ -9,7 +9,7 @@ import typing as t
 from winrm import Session
 
 
-class Connection(Session):
+class WinrmClient(Session):
     """ Winrm通用连接 """
 
     def __init__(self, endpoint: t.Text, username: t.Text, password: t.Text, **kwargs: t.Any) -> None:
@@ -20,4 +20,4 @@ class Connection(Session):
         @param password: 认证密码
         @param kwargs: 其它选项
         """
-        super(Connection, self).__init__(target=endpoint, auth=(username, password), **kwargs)
+        super(WinrmClient, self).__init__(target=endpoint, auth=(username, password), **kwargs)

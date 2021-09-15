@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import typing as t
 
-from service_winrm.core.connect import Connection
+from service_winrm.core.client import WinrmClient
 from service_core.core.context import WorkerContext
 from service_winrm.constants import WINRM_CONFIG_KEY
 from service_core.core.service.dependency import Dependency
@@ -46,4 +46,4 @@ class Winrm(Dependency):
         @return: t.Any
         """
         # 注意: winrm的连接是不允许共享的,涉及内部会话
-        return Connection(**self.connect_options)
+        return WinrmClient(**self.connect_options)

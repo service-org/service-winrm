@@ -49,10 +49,10 @@ import typing as t
 
 from logging import getLogger
 from passlib.hash import nthash
+from service_winrm.core.client import WinrmClient
 from service_winrm.core.dependencies import Winrm
 from service_croniter.core.entrypoints import croniter
 from service_core.core.service import Service as BaseService
-from service_winrm.core.connect import Connection as WinrmConnection
 
 logger = getLogger(__name__)
 
@@ -66,7 +66,7 @@ class Service(BaseService):
     desc = 'demo'
 
     # 远程PS管理
-    winrm: WinrmConnection = Winrm(alias='test')
+    winrm: WinrmClient = Winrm(alias='test')
 
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
         # 此服务无需启动监听端口, 请初始化掉下面参数
