@@ -28,6 +28,7 @@ class Winrm(Dependency):
         """
         self.alias = alias
         self.connect_options = connect_options or {}
+        kwargs.setdefault('once_inject', False)
         super(Winrm, self).__init__(**kwargs)
 
     def setup(self) -> None:
