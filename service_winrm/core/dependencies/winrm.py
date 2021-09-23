@@ -7,7 +7,6 @@ from __future__ import annotations
 import typing as t
 
 from service_winrm.core.client import WinrmClient
-from service_core.core.context import WorkerContext
 from service_winrm.constants import WINRM_CONFIG_KEY
 from service_core.core.service.dependency import Dependency
 
@@ -27,8 +26,8 @@ class Winrm(Dependency):
         @param kwargs: 其它配置
         """
         self.alias = alias
+        self.client = None
         self.connect_options = connect_options or {}
-        kwargs.setdefault('once_inject', False)
         super(Winrm, self).__init__(**kwargs)
 
     def setup(self) -> None:
@@ -40,11 +39,9 @@ class Winrm(Dependency):
         # 防止YAML中声明值为None
         self.connect_options = (connect_options or {}) | self.connect_options
 
-    def get_instance(self, context: WorkerContext) -> t.Any:
-        """ 获取注入对象
+    def get_client(self) -> WinrmClient:
+        """ 获取一个独立的会话
 
-        @param context: 上下文对象
-        @return: t.Any
+        @return: WinrmClient
         """
-        # 注意: winrm的连接是不允许共享的,涉及内部会话
         return WinrmClient(**self.connect_options)

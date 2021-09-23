@@ -49,7 +49,6 @@ import typing as t
 
 from logging import getLogger
 from passlib.hash import nthash
-from service_winrm.core.client import WinrmClient
 from service_winrm.core.dependencies import Winrm
 from service_croniter.core.entrypoints import croniter
 from service_core.core.service import Service as BaseService
@@ -66,7 +65,7 @@ class Service(BaseService):
     desc = 'demo'
 
     # 远程PS管理
-    winrm: WinrmClient = Winrm(alias='test')
+    winrm: Winrm = Winrm(alias='test')
 
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
         # 此服务无需启动监听端口, 请初始化掉下面参数
@@ -82,7 +81,7 @@ class Service(BaseService):
         @return: None
         """
         cmd = 'whoami'
-        result = self.winrm.run_cmd(cmd)
+        result = self.winrm.get_client().run_cmd(cmd)
         logger.debug(f'yeah~ yeah~ yeah~, cmd code={result.status_code} out={result.std_out} err={result.std_err}')
 
     @croniter.cron('* * * * * */1')
@@ -93,15 +92,15 @@ class Service(BaseService):
         @return: None
         """
         addomain = 'cn'
-        username = 'test'
         adserver = '127.0.0.1'
+        username = 'test'
         password = nthash.hash('test')
         ps = f'''
         Import-Module ActiveDirectory
         Import-Module C:\DSInternals
         Set-SamAccountPasswordHash -SamAccountName {username} -Domain {addomain} -NTHash {password} -Server {adserver}
         '''
-        result = self.winrm.run_ps(ps)
+        result = self.winrm.get_client().run_ps(ps)
         logger.debug(f'yeah~ yeah~ yeah~, ps code={result.status_code} out={result.std_out} err={result.std_err}')
 ```
 
