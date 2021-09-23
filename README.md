@@ -86,7 +86,7 @@ class Service(BaseService):
 
     @croniter.cron('* * * * * */1')
     def test_winrm_set_sam_account_password_hash_with_powershell(self, *args, **kwargs) -> None:
-        """ 测试执行powershell脚本
+        """ 测试执行ps脚本
 
         doc: https://docs.microsoft.com/en-us/windows/win32/winrm/portal
         @return: None
