@@ -38,6 +38,9 @@ class Winrm(Dependency):
         connect_options = self.container.config.get(f'{WINRM_CONFIG_KEY}.{self.alias}.connect_options', default={})
         # 防止YAML中声明值为None
         self.connect_options = (connect_options or {}) | self.connect_options
+        # 设置默认的读写的超时时间
+        self.connect_options.setdefault('read_timeout_sec', 10)
+        self.connect_options.setdefault('operation_timeout_sec', 10)
 
     def get_client(self) -> WinrmClient:
         """ 获取一个独立的会话
