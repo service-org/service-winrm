@@ -18,7 +18,11 @@ class Winrm(Dependency):
     doc: https://docs.microsoft.com/en-us/windows/win32/winrm/portal
     """
 
-    def __init__(self, alias: t.Text, connect_options: t.Optional[t.Dict[t.Text, t.Any]] = None, **kwargs: t.Any):
+    def __init__(
+            self,
+            alias: t.Text, connect_options: t.Optional[t.Dict[t.Text, t.Any]] = None,
+            **kwargs: t.Any
+    ) -> None:
         """ 初始化实例
 
         @param alias: 配置别名
