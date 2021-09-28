@@ -39,7 +39,7 @@ class Winrm(Dependency):
         # 防止YAML中声明值为None
         self.connect_options = (connect_options or {}) | self.connect_options
         # 设置默认的读写的超时时间
-        self.connect_options.setdefault('read_timeout_sec', 10)
+        self.connect_options.setdefault('read_timeout_sec', 15)
         self.connect_options.setdefault('operation_timeout_sec', 10)
 
     def get_client(self) -> WinrmClient:
