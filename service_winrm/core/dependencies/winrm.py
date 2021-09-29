@@ -18,6 +18,8 @@ class Winrm(Dependency):
     doc: https://docs.microsoft.com/en-us/windows/win32/winrm/portal
     """
 
+    name = 'Winrm'
+
     def __init__(
             self,
             alias: t.Text, connect_options: t.Optional[t.Dict[t.Text, t.Any]] = None,
